@@ -1,4 +1,4 @@
-package pro.kretov;
+package pro.kretov.founder.resFounder;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -10,16 +10,16 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class FileFounder implements Founder {
 
-    Path path;
-    String extension;
-    List<String> fileList;
+    private Path path;
+    private String extension;
+    private List<String> fileList;
 
     @Override
-    public List<String> getResList() {
+    public List<String> getResourceList() {
         try {
             Files.walkFileTree(path, new SFV());
         } catch (IOException e) {
-            System.out.println("Can't build path tree!");
+            System.out.println("Folder not exist or unreadable");
         }
         return fileList;
     }
@@ -27,7 +27,7 @@ public class FileFounder implements Founder {
     private class SFV extends SimpleFileVisitor<Path> {
 
         @Override
-        public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
             if (path.getFileName().toString().endsWith(extension)) {
                 fileList.add(path.toAbsolutePath().toString());
             }
