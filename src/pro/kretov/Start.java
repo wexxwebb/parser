@@ -9,12 +9,10 @@ import pro.kretov.parser.Result;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class Start {
 
@@ -28,6 +26,8 @@ public class Start {
     }
 
     public static void main(String[] args) {
+//        Scanner scanner = new Scanner(System.in);
+//        scanner.nextLine();
         String fileResListName = "resources.txt";
         Founder resFounder;
         int retry = 0;
@@ -51,8 +51,7 @@ public class Start {
         }
 
         AtomicBoolean play = new AtomicBoolean(true);
-        ConcurrentHashMap<String, Integer> uniqueWords = new ConcurrentHashMap<>();
-        ConcurrentSkipListSet<String> nonUniqueWords = new ConcurrentSkipListSet<>();
+        ConcurrentHashMap<String, Integer> words = new ConcurrentHashMap<>();
         ExecutorService exec = Executors.newCachedThreadPool();
         List<Future<Result>> futures = new ArrayList<>();
 
@@ -86,6 +85,7 @@ public class Start {
                 }
             }
         }
+
         ArrayList<Thread> mergers = new ArrayList<>();
         while (true) {
             Iterator<Future<Result>> futureIterator = futures.iterator();
@@ -93,7 +93,7 @@ public class Start {
                 Future<Result> temp = futureIterator.next();
                 if (temp != null && temp.isDone()) {
                     try {
-                        Thread thread = new Thread(new Merger(uniqueWords, nonUniqueWords, temp.get(), play));
+                        Thread thread = new Thread(new Merger(words, temp.get(), play));
                         thread.start();
                         mergers.add(thread);
                         futureIterator.remove();
@@ -111,6 +111,7 @@ public class Start {
                 break;
             }
         }
+
         boolean stop = false;
         while (!stop && play.get()) {
             stop = true;
@@ -120,11 +121,20 @@ public class Start {
                 }
             }
         }
-        for (Map.Entry<String, Integer> entry : uniqueWords.entrySet()) {
-            if (!play.get()) return;
-            System.out.println(entry.getKey() + " " + entry.getValue());
-        }
-        System.out.println("Total: " + uniqueWords.size());
 
+        ArrayList<Map.Entry<String, Integer>> unique = new ArrayList<>();
+        if (play.get()) {
+            words.entrySet().stream().filter(
+                    (entry) -> entry.getValue() <= 3
+            ).forEach(
+                    (entry) -> {
+                        unique.add(entry);
+                        System.out.println(entry.getValue() + " " + entry.getKey());
+                    }
+            );
+            System.out.println("Total: " + unique.size());
+        }
+//        words = null;
+//        scanner.nextLine();
     }
 }

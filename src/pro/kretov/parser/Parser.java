@@ -14,7 +14,6 @@ public class Parser implements Callable<Result> {
     private BufferedReader bufReader;
     private String regExp;
     private Map<String, Integer> uniqueWord;
-    private Set<String> notUniqueWords;
     private AtomicBoolean play;
     private String resourcePath;
 
@@ -29,13 +28,10 @@ public class Parser implements Callable<Result> {
         this.play = play;
         this.resourcePath = resourcePath;
         this.uniqueWord = new HashMap<>();
-        this.notUniqueWords = new TreeSet<>();
     }
 
     private boolean checkString(String string) {
-        Pattern patter = Pattern.compile("[A-Za-z]+");
-        Matcher matcher = patter.matcher(string);
-        return !matcher.find();
+        return !string.matches("[A-Za-z]+");
     }
 
     @Override
@@ -58,18 +54,11 @@ public class Parser implements Callable<Result> {
                         return null;
                     }
                     String word = string.substring(matcher.start(), matcher.end());
-                    if (!notUniqueWords.contains(word)) {
-                        Integer count = uniqueWord.get(word);
-                        if (count != null && count >= 3) {
-                            uniqueWord.remove(word);
-                            notUniqueWords.add(word);
-                        } else {
-                            if (count != null) {
-                                uniqueWord.put(word, count + 1);
-                            } else {
-                                uniqueWord.put(word, 1);
-                            }
-                        }
+                    Integer count = uniqueWord.get(word);
+                    if (count == null) {
+                        uniqueWord.put(word, 1);
+                    } else {
+                        uniqueWord.put(word, count + 1);
                     }
                 }
             }
@@ -78,6 +67,6 @@ public class Parser implements Callable<Result> {
             System.out.printf("Can't read resource '%s'. Skipped.", resourcePath);
             return null;
         }
-        return new Result(uniqueWord, notUniqueWords);
+        return new Result(uniqueWord);
     }
 }
