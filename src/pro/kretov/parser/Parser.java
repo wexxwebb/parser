@@ -1,17 +1,9 @@
 package pro.kretov.parser;
 
-import pro.kretov.parser.Result;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.Buffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,8 +17,6 @@ public class Parser implements Callable<Result> {
     private Set<String> notUniqueWords;
     private AtomicBoolean play;
     private String resourcePath;
-    private Pattern pattern;
-    private Matcher matcher;
 
     public Parser(
             BufferedReader bufReader,
@@ -45,16 +35,13 @@ public class Parser implements Callable<Result> {
     private boolean checkString(String string) {
         Pattern patter = Pattern.compile("[A-Za-z]+");
         Matcher matcher = patter.matcher(string);
-        if (matcher.find()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !matcher.find();
     }
 
     @Override
     public Result call() {
-        pattern = Pattern.compile(regExp);
+        Pattern pattern = Pattern.compile(regExp);
+        Matcher matcher;
         String string;
         try {
             while ((string = bufReader.readLine()) != null) {

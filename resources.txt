@@ -9,5 +9,5 @@ https://wexxwebb.github.io/Lev_Tolstoi_-_Voina_i_Mir_2.txt
 HTTPS://wexxwebb.github.io/Michail_Lermontov_-_Geroi_nashego_vremeni.tx
 https://wexxwebb.github.io/Nikolai_Gogol_-_Mertvie_dushi.txt
 https://wexxwebb.github.io/Nikolai_Gogol_-_Taras_Bul'ba.txt
-c:\Users\admin\IdeaProjects\BookReader\txt\Книгосборник\Алекс Орлов\Штурм базы.txt
-c:\Users\admin\IdeaProjects\BookReader\txt\Книгосборник\Макс Фрай\Лабиринт\05 - Наваждения.txt
+!c:\Users\admin\IdeaProjects\BookReader\txt\Книгосборник\Алекс Орлов\Штурм базы.txt
+!c:\Users\admin\IdeaProjects\BookReader\txt\Книгосборник\Макс Фрай\Лабиринт\05 - Наваждения.txt

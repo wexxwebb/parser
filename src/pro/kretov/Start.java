@@ -52,7 +52,7 @@ public class Start {
 
         AtomicBoolean play = new AtomicBoolean(true);
         ConcurrentHashMap<String, Integer> uniqueWords = new ConcurrentHashMap<>();
-        ConcurrentSkipListSet<String> notUniqueWords = new ConcurrentSkipListSet<>();
+        ConcurrentSkipListSet<String> nonUniqueWords = new ConcurrentSkipListSet<>();
         ExecutorService exec = Executors.newCachedThreadPool();
         List<Future<Result>> futures = new ArrayList<>();
 
@@ -68,12 +68,13 @@ public class Start {
                         System.out.printf("Illegal resource path '%s'. Skipped.\n", resourcePath);
                         break;
                     }
+                    System.out.printf("Reading resource '%s'.\n", resourcePath);
                     futures.add(exec.submit(new Parser(bufr, "[а-яА-Я]+", play, resourcePath)));
                     break;
                 } catch (IOException e) {
                     retry++;
                     if (retry > 5) {
-                        System.out.printf("Can't read resource. Skipped.\n");
+                        System.out.print("Can't read resource. Skipped.\n");
                         break;
                     } else {
                         if (retry == 1) {
@@ -92,7 +93,7 @@ public class Start {
                 Future<Result> temp = futureIterator.next();
                 if (temp != null && temp.isDone()) {
                     try {
-                        Thread thread = new Thread(new Merger(uniqueWords, notUniqueWords, temp.get(), play));
+                        Thread thread = new Thread(new Merger(uniqueWords, nonUniqueWords, temp.get(), play));
                         thread.start();
                         mergers.add(thread);
                         futureIterator.remove();
