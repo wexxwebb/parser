@@ -1,4 +1,6 @@
-package pro.kretov.founder.reader;
+package pro.kretov.reader;
+
+import pro.kretov.wrapper.Wrapper;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -19,9 +21,13 @@ public class ReadersFactory implements Readers {
     }
 
     @Override
-    public BufferedReader getReader(String resPath) throws IOException {
+    public Wrapper<BufferedReader> getReader(String resPath) throws IOException {
         if (startsWith(resPath, "[A-Za-z]:")) {
-            return new BufferedReader(new FileReader(resPath));
+            return new Wrapper<>(
+                    new BufferedReader(new FileReader(resPath)),
+                    true,
+                    String.format("Resource '%s' open success.", resPath)
+            );
         } else if (startsWith(resPath, "(H|h)(T|t)(T|t)(P|p)")) {
             URL url = new URL(resPath);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -29,9 +35,17 @@ public class ReadersFactory implements Readers {
             connection.setRequestProperty("User-Agent", "Mozilla/5.0");
             connection.setReadTimeout(10000);
             connection.connect();
-            return new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            return new Wrapper<>(
+                    new BufferedReader(new InputStreamReader(connection.getInputStream())),
+                    true,
+                    String.format("Resource '%s' open success.", resPath)
+            );
         } else {
-            return null;
+            return new Wrapper<>(
+                   null,
+                    false,
+                    String.format("Illegal resource path '%s'.", resPath)
+            );
         }
     }
 

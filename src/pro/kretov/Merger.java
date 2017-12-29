@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Merger implements Runnable {
 
-    private ConcurrentHashMap<String, Integer> uniqueWords;
+    private final ConcurrentHashMap<String, Integer> uniqueWords;
     private Result result;
     private AtomicBoolean play;
 
